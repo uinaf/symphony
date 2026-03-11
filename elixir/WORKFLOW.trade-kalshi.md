@@ -33,7 +33,7 @@ hooks:
     /Users/glitch/worktrees/symphony/uinaf-91-symphony-spike/elixir/bin/after-run-wake-glitch.sh
 agent:
   max_concurrent_agents: 1
-  max_turns: 12
+  max_turns: 6
 codex:
   command: codex app-server
   approval_policy: never
@@ -52,13 +52,15 @@ You are working on `trade-kalshi`, a Kalshi prediction market trading bot.
 
 ## Instructions
 1. Read `AGENTS.md` at the workspace root for project conventions
-2. Read the issue description carefully — it contains the full spec with implementation steps, files to change, and acceptance criteria
-3. Implement the changes following the spec precisely
-4. Run `bun run verify` (lint + typecheck + format + tests with 90% coverage) — fix until it passes
-5. Use conventional commits: `feat: description (fixes {{ issue.identifier }})`
-6. Push your branch and create a PR against `main`
-7. Move the Linear issue to `In Review` after the PR is open
-8. Do not use Linear GraphQL or update the Linear workpad; focus on code, verification, push, PR creation, and the `In Review` transition only
+2. Read the issue description carefully — it is the spec; do not broaden scope
+3. Implement the smallest change that satisfies the issue
+4. Do not wander, re-architect, or explore unrelated files
+5. Run `bun run verify` once you have a plausible implementation; then fix only what verify reports
+6. Use conventional commits: `feat: description (fixes {{ issue.identifier }})`
+7. Push your branch and create a PR against `main`
+8. Move the Linear issue to `In Review` after the PR is open
+9. Do not use Linear GraphQL or update the Linear workpad; focus on code, verify, push, PR, and `In Review`
+10. Be concise: avoid repeated full-repo rereads and avoid long reasoning loops
 
 ## Constraints
 - TypeScript strict mode, Bun runtime
