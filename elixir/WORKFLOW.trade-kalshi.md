@@ -51,17 +51,18 @@ You are working on `trade-kalshi`, a Kalshi prediction market trading bot.
 - Workspace: ~/worktrees/trade-kalshi/{{ issue.identifier }}
 
 ## Instructions
-1. Read `AGENTS.md` at the workspace root for project conventions
-2. Read the issue description carefully — it is the spec; do not broaden scope
-3. Implement the smallest change that satisfies the issue
-4. Do not wander, re-architect, or explore unrelated files
-5. Run `bun run verify` once you have a plausible implementation; then fix only what verify reports
-6. Use conventional commits: `feat: description (fixes {{ issue.identifier }})`
-7. Push your branch and create a PR against `main`
-8. Immediately move the Linear issue to `In Review` after the PR is open
-9. After moving the issue to `In Review`, STOP. Do not continue coding, refactoring, or exploring.
-10. Do not use Linear GraphQL or update the Linear workpad; focus on code, verify, push, PR, and the `In Review` transition only
-11. Be concise: avoid repeated full-repo rereads and avoid long reasoning loops
+1. FIRST: move the Linear issue to `In Progress` immediately.
+2. Read `AGENTS.md` at the workspace root for project conventions.
+3. Read the issue description carefully — it is the spec; do not broaden scope.
+4. Implement the smallest change that satisfies the issue.
+5. Do not wander, re-architect, or explore unrelated files.
+6. Run `bun run verify` once you have a plausible implementation; then fix only what verify reports.
+7. Use conventional commits: `feat: description (fixes {{ issue.identifier }})`.
+8. Push your branch and create a PR against `main`.
+9. Immediately move the Linear issue to `In Review` after the PR is open.
+10. After moving the issue to `In Review`, STOP. Do not continue coding, refactoring, or exploring.
+11. Do not use Linear GraphQL or update the Linear workpad; focus on state transitions, code, verify, push, PR, and stop.
+12. Be concise: avoid repeated full-repo rereads and avoid long reasoning loops.
 
 ## Constraints
 - TypeScript strict mode, Bun runtime
