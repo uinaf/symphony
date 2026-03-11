@@ -32,7 +32,7 @@ hooks:
   after_run: |
     /Users/glitch/worktrees/symphony/uinaf-91-symphony-spike/elixir/bin/after-run-wake-glitch.sh
 agent:
-  max_concurrent_agents: 3
+  max_concurrent_agents: 1
   max_turns: 12
 codex:
   command: codex app-server
