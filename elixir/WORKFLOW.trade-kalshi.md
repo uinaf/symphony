@@ -51,7 +51,7 @@ You are working on `trade-kalshi`, a Kalshi prediction market trading bot.
 - Workspace: ~/worktrees/trade-kalshi/{{ issue.identifier }}
 
 ## Instructions
-1. FIRST: move the Linear issue to `In Progress` immediately.
+1. FIRST: use the repo-local Linear skill at `.codex/skills/linear/SKILL.md` together with Symphony's `linear_graphql` tool to move the issue to `In Progress` immediately.
 2. Read `AGENTS.md` at the workspace root for project conventions.
 3. Read the issue description carefully — it is the spec; do not broaden scope.
 4. Implement the smallest change that satisfies the issue.
@@ -59,9 +59,9 @@ You are working on `trade-kalshi`, a Kalshi prediction market trading bot.
 6. Run `bun run verify` once you have a plausible implementation; then fix only what verify reports.
 7. Use conventional commits: `feat: description (fixes {{ issue.identifier }})`.
 8. Push your branch and create a PR against `main`.
-9. Immediately move the Linear issue to `In Review` after the PR is open.
+9. Use the Linear skill + `linear_graphql` to attach the PR to the issue and move the issue to `In Review` immediately.
 10. After moving the issue to `In Review`, STOP. Do not continue coding, refactoring, or exploring.
-11. Do not use Linear GraphQL or update the Linear workpad; focus on state transitions, code, verify, push, PR, and stop.
+11. Use `linear_graphql` for lifecycle transitions; do not wing it with ad-hoc shell GraphQL.
 12. Be concise: avoid repeated full-repo rereads and avoid long reasoning loops.
 
 ## Constraints
