@@ -6,13 +6,9 @@ STATE="$(linear issue view "$ISSUE_ID" --json 2>/dev/null | jq -r '.state.name /
 BRANCH="$(printf '%s' "$ISSUE_ID" | tr '[:upper:]' '[:lower:]')"
 PR_URL="$(gh pr list --head "$BRANCH" --json url --jq '.[0].url // empty' 2>/dev/null || true)"
 
-# Workflow-level rule: if a PR exists, notify. In Review is desired, not a hard gate.
-if [ -z "$PR_URL" ]; then
-  exit 0
-fi
+[ -z "$PR_URL" ] && exit 0
 
-MSG="🗿 ${ISSUE_ID} ${PR_URL} — current state: ${STATE:-unknown}. Review the diff. Reply with ONLY: the PR link as markdown [${ISSUE_ID}](url), then merge/reject + one sentence reason. Nothing else."
-
+MSG="🗿 ${ISSUE_ID} ${PR_URL} — reply with ONLY: [${ISSUE_ID}](url) merge/reject — one sentence reason."
 HOOKS_TOKEN="${OPENCLAW_HOOKS_TOKEN:-}"
 [ -z "$HOOKS_TOKEN" ] && exit 0
 

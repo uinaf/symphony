@@ -18,7 +18,7 @@ hooks:
   after_create: |
     set -e
     ISSUE_ID="$(basename "$PWD")"
-    BRANCH="$(echo "$ISSUE_ID" | tr '[:upper:]' '[:lower:]')"
+    BRANCH="$(printf '%s' "$ISSUE_ID" | tr '[:upper:]' '[:lower:]')"
     git -C /Users/glitch/projects/trade-kalshi fetch origin
     git -C /Users/glitch/projects/trade-kalshi worktree add "$PWD" -b "$BRANCH" origin/main
     cd "$PWD"
@@ -26,7 +26,7 @@ hooks:
   before_remove: |
     set -e
     ISSUE_ID="$(basename "$PWD")"
-    BRANCH="$(echo "$ISSUE_ID" | tr '[:upper:]' '[:lower:]')"
+    BRANCH="$(printf '%s' "$ISSUE_ID" | tr '[:upper:]' '[:lower:]')"
     git -C /Users/glitch/projects/trade-kalshi worktree remove --force "$PWD" || true
     git -C /Users/glitch/projects/trade-kalshi branch -D "$BRANCH" 2>/dev/null || true
   after_run: |
@@ -50,19 +50,15 @@ You are working on `trade-kalshi`, a Kalshi prediction market trading bot.
 - Issue: {{ issue.identifier }} — {{ issue.title }}
 - Workspace: ~/worktrees/trade-kalshi/{{ issue.identifier }}
 
-## Instructions
-1. FIRST: use the repo-local Linear skill at `.codex/skills/linear/SKILL.md` together with Symphony's `linear_graphql` tool to move the issue to `In Progress` immediately.
-2. Read `AGENTS.md` at the workspace root for project conventions.
-3. Read the issue description carefully — it is the spec; do not broaden scope.
-4. Implement the smallest change that satisfies the issue.
-5. Do not wander, re-architect, or explore unrelated files.
-6. Run `bun run verify` once you have a plausible implementation; then fix only what verify reports.
-7. Use conventional commits: `feat: description (fixes {{ issue.identifier }})`.
-8. Push your branch and create a PR against `main`.
-9. Use the Linear skill + `linear_graphql` to attach the PR to the issue and move the issue to `In Review` immediately.
-10. After moving the issue to `In Review`, STOP. Do not continue coding, refactoring, or exploring.
-11. Use `linear_graphql` for lifecycle transitions; do not wing it with ad-hoc shell GraphQL.
-12. Be concise: avoid repeated full-repo rereads and avoid long reasoning loops.
+## Workflow
+1. FIRST: use `.codex/skills/linear/SKILL.md` with Symphony's `linear_graphql` tool to move the issue to `In Progress`.
+2. Read `AGENTS.md` and the issue description. Treat the issue description as the spec. Do not broaden scope.
+3. Make the smallest change that satisfies the issue.
+4. Run `bun run verify`. Fix only what `verify` reports.
+5. Commit with `feat: description (fixes {{ issue.identifier }})`.
+6. Push your branch and open a PR against `main`.
+7. Use the Linear skill + `linear_graphql` to attach the PR to the issue and move the issue to `In Review`.
+8. STOP immediately after the `In Review` transition. Do not continue coding, refactoring, or exploring.
 
 ## Constraints
 - TypeScript strict mode, Bun runtime
@@ -70,3 +66,4 @@ You are working on `trade-kalshi`, a Kalshi prediction market trading bot.
 - All new code needs tests (~90% coverage enforced)
 - Limit orders only, atomic state file writes
 - Do NOT modify `limits` section in config — that's human-owned
+- Be concise: avoid repo-wide rereads and long reasoning loops
