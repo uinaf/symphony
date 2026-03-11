@@ -17,17 +17,17 @@ workspace:
 hooks:
   after_create: |
     set -e
-    ISSUE_ID="$(basename "$WORKSPACE")"
+    ISSUE_ID="$(basename "$PWD")"
     BRANCH="$(echo "$ISSUE_ID" | tr '[:upper:]' '[:lower:]')"
     git -C /Users/glitch/projects/trade-kalshi fetch origin
-    git -C /Users/glitch/projects/trade-kalshi worktree add "$WORKSPACE" -b "$BRANCH" origin/main
-    cd "$WORKSPACE"
+    git -C /Users/glitch/projects/trade-kalshi worktree add "$PWD" -b "$BRANCH" origin/main
+    cd "$PWD"
     bun install
   before_remove: |
     set -e
-    ISSUE_ID="$(basename "$WORKSPACE")"
+    ISSUE_ID="$(basename "$PWD")"
     BRANCH="$(echo "$ISSUE_ID" | tr '[:upper:]' '[:lower:]')"
-    git -C /Users/glitch/projects/trade-kalshi worktree remove --force "$WORKSPACE" || true
+    git -C /Users/glitch/projects/trade-kalshi worktree remove --force "$PWD" || true
     git -C /Users/glitch/projects/trade-kalshi branch -D "$BRANCH" 2>/dev/null || true
   after_run: |
     /Users/glitch/worktrees/symphony/uinaf-91-symphony-spike/elixir/bin/after-run-wake-glitch.sh
