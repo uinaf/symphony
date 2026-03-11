@@ -58,9 +58,10 @@ You are working on `trade-kalshi`, a Kalshi prediction market trading bot.
 5. Run `bun run verify` once you have a plausible implementation; then fix only what verify reports
 6. Use conventional commits: `feat: description (fixes {{ issue.identifier }})`
 7. Push your branch and create a PR against `main`
-8. Move the Linear issue to `In Review` after the PR is open
-9. Do not use Linear GraphQL or update the Linear workpad; focus on code, verify, push, PR, and `In Review`
-10. Be concise: avoid repeated full-repo rereads and avoid long reasoning loops
+8. Immediately move the Linear issue to `In Review` after the PR is open
+9. After moving the issue to `In Review`, STOP. Do not continue coding, refactoring, or exploring.
+10. Do not use Linear GraphQL or update the Linear workpad; focus on code, verify, push, PR, and the `In Review` transition only
+11. Be concise: avoid repeated full-repo rereads and avoid long reasoning loops
 
 ## Constraints
 - TypeScript strict mode, Bun runtime
