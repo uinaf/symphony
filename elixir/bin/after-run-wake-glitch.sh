@@ -3,16 +3,15 @@ set -euo pipefail
 
 ISSUE_ID="$(basename "$PWD")"
 STATE="$(linear issue view "$ISSUE_ID" --json 2>/dev/null | jq -r '.state.name // empty')"
-[ "$STATE" = "In Review" ] || exit 0
-
 BRANCH="$(printf '%s' "$ISSUE_ID" | tr '[:upper:]' '[:lower:]')"
 PR_URL="$(gh pr list --head "$BRANCH" --json url --jq '.[0].url // empty' 2>/dev/null || true)"
 
-if [ -n "$PR_URL" ]; then
-  MSG="🗿 ${ISSUE_ID} ${PR_URL} — review the diff. Reply with ONLY: the PR link as markdown [${ISSUE_ID}](url), then merge/reject + one sentence reason. Nothing else."
-else
-  MSG="🗿 ${ISSUE_ID} moved to In Review (no PR found). Check workspace and report verdict."
+# Workflow-level rule: if a PR exists, notify. In Review is desired, not a hard gate.
+if [ -z "$PR_URL" ]; then
+  exit 0
 fi
+
+MSG="🗿 ${ISSUE_ID} ${PR_URL} — current state: ${STATE:-unknown}. Review the diff. Reply with ONLY: the PR link as markdown [${ISSUE_ID}](url), then merge/reject + one sentence reason. Nothing else."
 
 HOOKS_TOKEN="${OPENCLAW_HOOKS_TOKEN:-}"
 [ -z "$HOOKS_TOKEN" ] && exit 0
