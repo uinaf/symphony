@@ -1,9 +1,11 @@
 ---
 tracker:
-  type: linear
+  kind: linear
   project_slug: "68453044bcab"
   active_states:
     - Todo
+    - In Progress
+    - Rework
   terminal_states:
     - Done
     - Cancelled
@@ -46,7 +48,7 @@ You are working on `trade-kalshi`, a Kalshi prediction market trading bot.
 
 ## Context
 - Issue: {{ issue.identifier }} — {{ issue.title }}
-- Workspace: {{ workspace.path }}
+- Workspace: ~/worktrees/trade-kalshi/{{ issue.identifier }}
 
 ## Instructions
 1. Read `AGENTS.md` at the workspace root for project conventions
@@ -55,7 +57,7 @@ You are working on `trade-kalshi`, a Kalshi prediction market trading bot.
 4. Run `bun run verify` (lint + typecheck + format + tests with 90% coverage) — fix until it passes
 5. Use conventional commits: `feat: description (fixes {{ issue.identifier }})`
 6. Push your branch and create a PR against `main`
-7. Update the Linear issue workpad with what you did
+7. Do not use Linear GraphQL or update the Linear workpad; focus on code, verification, push, and PR creation only
 
 ## Constraints
 - TypeScript strict mode, Bun runtime
