@@ -559,6 +559,10 @@ This section is intentionally redundant so a coding agent can implement the conf
 - `tracker.terminal_states`: list of strings, default `["Closed", "Cancelled", "Canceled", "Duplicate", "Done"]`
 - `polling.interval_ms`: integer, default `30000`
 - `workspace.root`: path, default `<system-temp>/symphony_workspaces`
+- `worker.ssh_hosts` (extension): list of SSH host strings, optional; when omitted, work runs
+  locally
+- `worker.max_concurrent_agents_per_host` (extension): positive integer, optional; shared per-host
+  cap applied across configured SSH hosts
 - `hooks.after_create`: shell script or null
 - `hooks.before_run`: shell script or null
 - `hooks.after_run`: shell script or null
@@ -728,6 +732,12 @@ Per-state limit:
 - otherwise fallback to global limit
 
 The runtime counts issues by their current tracked state in the `running` map.
+
+Optional SSH host limit:
+
+- When `worker.max_concurrent_agents_per_host` is set, each configured SSH host may run at most
+  that many concurrent agents at once.
+- Hosts at that cap are skipped for new dispatch until capacity frees up.
 
 ### 8.4 Retry and Backoff
 

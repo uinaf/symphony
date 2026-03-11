@@ -327,6 +327,12 @@ defmodule SymphonyElixir.Orchestrator do
     sort_issues_for_dispatch(issues)
   end
 
+  @doc false
+  @spec select_worker_host_for_test(term(), String.t() | nil) :: String.t() | nil | :no_worker_capacity
+  def select_worker_host_for_test(%State{} = state, preferred_worker_host) do
+    select_worker_host(state, preferred_worker_host)
+  end
+
   defp reconcile_running_issue_states([], state, _active_states, _terminal_states), do: state
 
   defp reconcile_running_issue_states([issue | rest], state, active_states, terminal_states) do
@@ -556,7 +562,8 @@ defmodule SymphonyElixir.Orchestrator do
       !MapSet.member?(claimed, issue.id) and
       !Map.has_key?(running, issue.id) and
       available_slots(state) > 0 and
-      state_slots_available?(issue, running)
+      state_slots_available?(issue, running) and
+      worker_slots_available?(state)
   end
 
   defp should_dispatch_issue?(_issue, _state, _active_states, _terminal_states), do: false
@@ -672,8 +679,18 @@ defmodule SymphonyElixir.Orchestrator do
 
   defp do_dispatch_issue(%State{} = state, issue, attempt, preferred_worker_host) do
     recipient = self()
-    worker_host = select_worker_host(state, preferred_worker_host)
 
+    case select_worker_host(state, preferred_worker_host) do
+      :no_worker_capacity ->
+        Logger.debug("No SSH worker slots available for #{issue_context(issue)} preferred_worker_host=#{inspect(preferred_worker_host)}")
+        state
+
+      worker_host ->
+        spawn_issue_on_worker_host(state, issue, attempt, recipient, worker_host)
+    end
+  end
+
+  defp spawn_issue_on_worker_host(%State{} = state, issue, attempt, recipient, worker_host) do
     case Task.Supervisor.start_child(SymphonyElixir.TaskSupervisor, fn ->
            AgentRunner.run(issue, recipient, attempt: attempt, worker_host: worker_host)
          end) do
@@ -885,7 +902,8 @@ defmodule SymphonyElixir.Orchestrator do
 
   defp handle_active_retry(state, issue, attempt, metadata) do
     if retry_candidate_issue?(issue, terminal_state_set()) and
-         dispatch_slots_available?(issue, state) do
+         dispatch_slots_available?(issue, state) and
+         worker_slots_available?(state, metadata[:worker_host]) do
       {:noreply, dispatch_issue(state, issue, attempt, metadata[:worker_host])}
     else
       Logger.debug("No available slots for retrying #{issue_context(issue)}; retrying again")
@@ -958,10 +976,17 @@ defmodule SymphonyElixir.Orchestrator do
         nil
 
       hosts ->
-        if preferred_worker_host_available?(preferred_worker_host, hosts) do
-          preferred_worker_host
-        else
-          least_loaded_worker_host(state, hosts)
+        available_hosts = Enum.filter(hosts, &worker_host_slots_available?(state, &1))
+
+        cond do
+          available_hosts == [] ->
+            :no_worker_capacity
+
+          preferred_worker_host_available?(preferred_worker_host, available_hosts) ->
+            preferred_worker_host
+
+          true ->
+            least_loaded_worker_host(state, available_hosts)
         end
     end
   end
@@ -987,6 +1012,24 @@ defmodule SymphonyElixir.Orchestrator do
       {_issue_id, %{worker_host: ^worker_host}} -> true
       _ -> false
     end)
+  end
+
+  defp worker_slots_available?(%State{} = state) do
+    select_worker_host(state, nil) != :no_worker_capacity
+  end
+
+  defp worker_slots_available?(%State{} = state, preferred_worker_host) do
+    select_worker_host(state, preferred_worker_host) != :no_worker_capacity
+  end
+
+  defp worker_host_slots_available?(%State{} = state, worker_host) when is_binary(worker_host) do
+    case Config.settings!().worker.max_concurrent_agents_per_host do
+      limit when is_integer(limit) and limit > 0 ->
+        running_worker_host_count(state.running, worker_host) < limit
+
+      _ ->
+        true
+    end
   end
 
   defp find_issue_by_id(issues, issue_id) when is_binary(issue_id) do
