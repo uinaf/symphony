@@ -321,7 +321,6 @@ defmodule SymphonyElixir.Orchestrator do
     cond do
       terminal_issue_state?(issue.state, terminal_states) ->
         Logger.info("Issue moved to terminal state: #{issue_context(issue)} state=#{issue.state}; stopping active agent")
-        maybe_run_handoff_hook(state, issue)
 
         terminate_running_issue(state, issue.id, true)
 
@@ -335,7 +334,6 @@ defmodule SymphonyElixir.Orchestrator do
 
       true ->
         Logger.info("Issue moved to non-active state: #{issue_context(issue)} state=#{issue.state}; stopping active agent")
-        maybe_run_handoff_hook(state, issue)
 
         terminate_running_issue(state, issue.id, false)
     end
@@ -386,18 +384,6 @@ defmodule SymphonyElixir.Orchestrator do
         state
     end
   end
-
-  defp maybe_run_handoff_hook(%State{} = state, %Issue{} = issue) do
-    case Map.get(state.running, issue.id) do
-      %{identifier: identifier} when is_binary(identifier) ->
-        workspace = Path.join(Config.settings!().workspace.root, identifier)
-        Workspace.run_after_run_hook(workspace, issue)
-
-      _ ->
-        :ok
-    end
-  end
-
 
   defp terminate_running_issue(%State{} = state, issue_id, cleanup_workspace) do
     case Map.get(state.running, issue_id) do
