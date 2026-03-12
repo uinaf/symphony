@@ -30,7 +30,7 @@ hooks:
     git -C /Users/glitch/projects/trade-kalshi worktree remove --force "$PWD" || true
     git -C /Users/glitch/projects/trade-kalshi branch -D "$BRANCH" 2>/dev/null || true
   after_run: |
-    /Users/glitch/worktrees/symphony/uinaf-91-symphony-spike/elixir/bin/after-run-wake-glitch.sh
+    /Users/glitch/projects/symphony/elixir/bin/after-run-wake-glitch.sh
 agent:
   max_concurrent_agents: 1
   max_turns: 6

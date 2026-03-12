@@ -31,7 +31,7 @@ hooks:
     git -C "$BASE_REPO" worktree remove --force "$PWD" || true
     git -C "$BASE_REPO" branch -D "$BRANCH_NAME" || true
   after_run: |
-    /Users/glitch/worktrees/symphony/uinaf-91-symphony-spike/elixir/bin/after-run-wake-glitch.sh
+    /Users/glitch/projects/symphony/elixir/bin/after-run-wake-glitch.sh
 agent:
   max_concurrent_agents: 2
   max_turns: 8
